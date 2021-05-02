@@ -1,0 +1,68 @@
+ <!--Author: Ryley Ziegler-->
+ <!--Date: May 2, 2021-->
+ <!--API from: sonicAPI.com-->
+ <!--CSS from https://1stwebdesigner.com/free-code-snippets-css-buttons/-->
+ 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="button.css">
+    <title>SampleKeyFinder</title>
+    <p>A succesful upload will return at 201 code along with a file id in an xml string!</p>
+</head>
+<body>
+    <label for="file-upload" class="btn-two red mini">
+        Pick File
+    </label>
+    <input id="file-upload" type="file"/>
+    <button onclick="submit()" class="btn-two blue mini" >Upload file</button>
+    <pre id="output"></pre> 
+</body>
+</html>
+
+<script type="application/javascript">
+
+//Using the acesskey + url in order to make a successful post call.
+const apiUrl = "https://api.sonicapi.com/file/upload?access_id=a237fe1e-cde0-481a-a290-dcd34368fb84& -Ffile=";
+
+//var formdata = new FormData();
+//formdata.append("file", fileInput.files[0], "[PROXY]");
+
+const formData = new FormData();
+
+async function submit(){
+    const fileField = document.querySelector('input[type="file"]');
+    formData.append('file', fileField.files[0]); 
+
+    var requestOptions = {
+    method: 'POST',
+    body: formData,
+    redirect: 'follow'
+    };
+
+
+    //Makes a post call to Sonicapi which returns file_id in xml format.
+    await fetch(apiUrl, requestOptions)  
+    .then(response => response.text())
+    .then(data=>{
+        //Trying to parse the api response.
+        let parser = new DOMParser(); 
+        let xml = parser.parseFromString(data,"text/xml");
+        document.getElementById('output').textContent = data;
+        
+        //getXml(xml); //call to parser function.
+    })
+    .catch(error => console.log('error', error));
+    
+}
+
+//Continuation of parse that I never got to work.
+/*function getXml(x){ 
+    let list = document.getElementById('response');
+    let response = x.getElementsByTagName('file');
+    console.log(response)    
+}*/
+</script>
+
